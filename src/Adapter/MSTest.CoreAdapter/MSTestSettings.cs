@@ -6,7 +6,7 @@ namespace Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter
     using System;
     using System.IO;
     using System.Xml;
-
+    using Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.Execution;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Adapter;
     using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
@@ -48,6 +48,7 @@ namespace Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter
             this.EnableBaseClassTestMethodsFromOtherAssemblies = true;
             this.ForcedLegacyMode = false;
             this.TestSettingsFile = null;
+            this.TestTimeout = TestMethodInfo.TimeoutWhenNotSet;
         }
 
         /// <summary>
@@ -117,6 +118,11 @@ namespace Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter
         /// Gets a value indicating whether to enable discovery of test methods from base classes in a different assembly from the inheriting test class.
         /// </summary>
         public bool EnableBaseClassTestMethodsFromOtherAssemblies { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating the timeout for each test
+        /// </summary>
+        public int TestTimeout { get; private set; }
 
         /// <summary>
         /// Populate settings based on existing settings object.
@@ -244,6 +250,7 @@ namespace Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter
             //     <CaptureTraceOutput>true</CaptureTraceOutput>
             //     <MapInconclusiveToFailed>false</MapInconclusiveToFailed>
             //     <EnableBaseClassTestMethodsFromOtherAssemblies>false</EnableBaseClassTestMethodsFromOtherAssemblies>
+            //     <TestTimeout>5000<TestTimeout>
             // </MSTestV2>
             //
             // (or)
@@ -319,6 +326,15 @@ namespace Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter
 
                                 break;
                             }
+
+                        case "TESTTIMEOUT":
+                            int testTimeout;
+                            if (int.TryParse(reader.ReadInnerXml(), out testTimeout) && testTimeout > 0)
+                            {
+                                settings.TestTimeout = testTimeout;
+                            }
+
+                            break;
 
                         default:
                             {

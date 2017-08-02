@@ -134,6 +134,21 @@ namespace Microsoft.VisualStudio.TestPlatform.MSTestAdapter.UnitTests
         }
 
         [TestMethod]
+        public void TestTimeoutShouldBeReadCorrectlyWhenSpecifiedInRunSettings()
+        {
+            string runSettingxml =
+            @"<RunSettings>
+                 <MSTest>
+                   <TestTimeout>2000</TestTimeout>
+                 </MSTest>
+               </RunSettings>";
+
+            MSTestSettings adapterSettings = MSTestSettings.GetSettings(runSettingxml, MSTestSettings.SettingsName);
+
+            Assert.AreEqual(2000, adapterSettings.TestTimeout, "TestTimeout value not read correctly");
+        }
+
+        [TestMethod]
         public void EnableBaseClassTestMethodsFromOtherAssembliesIsByDefaulTrueWhenNotSpecified()
         {
             string runSettingxml =

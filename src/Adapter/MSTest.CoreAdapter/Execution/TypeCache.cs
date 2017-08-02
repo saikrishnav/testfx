@@ -611,6 +611,7 @@ namespace Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.Execution
         {
             Debug.Assert(methodInfo != null, "TestMethod should be non-null");
             var timeoutAttribute = this.reflectionHelper.GetAttribute<TimeoutAttribute>(methodInfo);
+            var timeoutToSet = TestMethodInfo.TimeoutWhenNotSet;
 
             if (timeoutAttribute != null)
             {
@@ -620,10 +621,14 @@ namespace Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.Execution
                     throw new TypeInspectionException(message);
                 }
 
-                return timeoutAttribute.Timeout;
+                timeoutToSet = timeoutAttribute.Timeout;
+            }
+            else if (MSTestSettings.CurrentSettings.TestTimeout > 0)
+            {
+                timeoutToSet = MSTestSettings.CurrentSettings.TestTimeout;
             }
 
-            return TestMethodInfo.TimeoutWhenNotSet;
+            return timeoutToSet;
         }
 
         /// <summary>
