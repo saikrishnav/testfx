@@ -65,11 +65,11 @@ namespace Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Uti
                 string tryMe;
                 if (iteration == 0)
                 {
-                    tryMe = originalDirectoryName;
+                    tryMe = string.Format(CultureInfo.InvariantCulture, "{0}[{1}]", originalDirectoryName, Process.GetCurrentProcess().Id);
                 }
                 else
                 {
-                    tryMe = string.Format(CultureInfo.InvariantCulture, "{0}[{1}]", originalDirectoryName, iteration.ToString(CultureInfo.InvariantCulture));
+                    tryMe = string.Format(CultureInfo.InvariantCulture, "{0}[{1}-{2}]", originalDirectoryName, Process.GetCurrentProcess().Id, iteration.ToString(CultureInfo.InvariantCulture));
                 }
 
                 string tryMePath = Path.Combine(parentDirectoryName, tryMe);
